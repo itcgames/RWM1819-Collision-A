@@ -9,23 +9,23 @@ class Vector2
         this.y = y
     }
 
-    get x()
+    dotProduct(otherVector)
     {
-        return this.x
+        return (this.x * otherVector.x) + (this.y * otherVector.y)
     }
 
-    set x(x)
+    perp()
     {
-        this.x = x
+        return new Vector2(-this.y, this.x)        
     }
 
-    get y()
+    add(otherVector)
     {
-        return this.y
+        return new Vector2(this.x + otherVector.x, this.y + otherVector.y)
     }
 
-    set y(y)
+    subtract(otherVector)
     {
-        this.y = y
+        return new Vector2(this.x - otherVector.x, this.y - otherVector.y)
     }
 }
