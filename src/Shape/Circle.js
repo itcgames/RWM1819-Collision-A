@@ -1,8 +1,12 @@
 class Circle extends Shape
 {
-    constructor(position, orientation, radius)
-    {
-        super(position, orientation)
+    /**
+     * The default constructor of the class.
+     * @param {Vector2} position 
+     * @param {Scalar} radius 
+     */
+    constructor(position, radius) {
+        super(position)  //  Call the parent classes constructor.
         this.radius = radius
         this.isCircle = true
     }
