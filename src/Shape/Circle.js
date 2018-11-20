@@ -6,8 +6,8 @@ class Circle extends Shape
      * @param {Scalar} radius 
      */
     constructor(position, radius) {
-        super(position)  //  Call the parent classes constructor.
-        this.radius = radius
-        this.isCircle = true
+        super(position);  //  Call the parent classes constructor.
+        this.radius = radius;
+        this.isCircle = true;
     }
 }

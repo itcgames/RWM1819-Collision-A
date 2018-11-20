@@ -22,7 +22,7 @@ class Game
 
     update() {
         //  Update game objects.
-        gameNs.game.collisionManager.update();
+        gameNs.game.collisionManager.checkBoxColliderArray();
         //  Draw new frame.
         gameNs.game.render();
         // Recursive call to Update method.

@@ -18,18 +18,46 @@ class CollisionManager
   /**
    * Checks for collisions between the objects in each respective array.
    */
-  update() {
-    if (this.boxColliderArray.length > 0) {
-      var boxResult = this.checkArray(this.boxColliderArray, CollisionManager.AxisAlignedBoundingBox);
-    }
+  checkAllColliders() {
+    this.checkBoxColliderArray();
+    this.checkCircleColliderArray();
+    this.checkPolygonColliderArray();
+  }
 
+  /**
+   * 
+   */
+  checkBoxColliderArray()
+  {
+    var boxResult;
+    if (this.boxColliderArray.length > 0) {
+      boxResult = this.checkArray(this.boxColliderArray, CollisionManager.AxisAlignedBoundingBox);
+    }
+    return boxResult;
+  }
+
+  /**
+   * 
+   */
+  checkCircleColliderArray()
+  {
+    var circleResult;
     if (this.circleColliderArray.length > 0) {
       var circleResult = this.checkArray(this.circleColliderArray, CollisionManager.CircleCollision);
     }
+    return circleResult
+  }
 
+  /**
+   * 
+   */
+  checkPolygonColliderArray()
+  {
+    var polygonResult;
     if (this.polygonColliderArray.length > 0) {
-      var polygonResult = this.checkArray(this.polygonColliderArray, CollisionManager.SeperatingAxisTheorem);
+      polygonResult = this.checkArray(this.polygonColliderArray, CollisionManager.SeperatingAxisTheorem);
     }
+    return polygonResult;
   }
 
   /**
@@ -120,17 +148,32 @@ class CollisionManager
         if (result[j] === undefined) {
           result[j] = [];
         }
-        if (inputArray[i] !== inputArray[j] && result[i][j] === undefined){
-          var testResult = inputFunction(inputArray[i].shape, inputArray[j].shape);
-          result[i][j] = testResult;
-          result[j][i] = testResult;
-          //  If the object has collided.
-          if (testResult === true) {
-            inputArray[i].colliding = true;
-            inputArray[j].colliding = true;
+        //  Check if the current element should be ignored.
+        var ignoreObject = false;
+        for(var k = 0; k < inputArray[j].objectTags.length; k++) {
+          var index = inputArray[i].ignoreTags.indexOf(inputArray[j].objectTags[k]);
+          if (index > -1) {
+            ignoreObject = true;
+            break;
           }
         }
+
+        if (inputArray[i] !== inputArray[j] && result[i][j] === undefined && ignoreObject === false){
+          var testResult = inputFunction(inputArray[i], inputArray[j]);
+          result[i][j] = testResult;
+          result[j][i] = testResult;          
+        }
       }
+    }
+    //  Set each elements own colliding boolean to match their status.
+    for (var i = 0; i < result.length; i++) {
+      var colliding = false;
+      for (var j = 0; j < result.length; j++) {
+        if (result[i][j] === true) {
+          colliding = true;
+        }
+      }
+      inputArray[i].colliding = colliding;      
     }
     return result;
   }
@@ -193,15 +236,45 @@ class CollisionManager
   }
 
   /**
-   * Checks for a collision between two rectangles by checking for overlap in their positions.
-   * @param {Rectangle} rect1 
-   * @param {Rectangle} rect2 
+   * 
+   * @param {Boolean[]} results 
    */
-  static AxisAlignedBoundingBox(rect1, rect2) {
-    if (rect1.position.x <= rect2.position.x + rect2.width &&
-      rect1.position.x + rect1.width >= rect2.position.x &&
-      rect1.position.y <= rect2.position.y + rect2.height &&
-      rect1.position.y + rect1.height >= rect2.position.y ) {
+  static GetTagsOfCollided(results)
+  {
+    var collidedObjectTags = [];
+    for(var i = 0; i < results.length; i++) {
+      if (results[i] === true) {
+        collidedObjectTags.push.apply(collidedObjectTags, this.polygonColliderArray[i].objectTags);
+      }
+    }
+    return collidedObjectTags;
+  }
+
+  /**
+   * 
+   * @param {String[]} array 
+   * @param {String} tag 
+   */
+  static ArrayContainsTag(array, tag)
+  {
+    var containsTag = false;
+    var index = array.indexOf(tag);
+    if (index > -1) {
+      containsTag = true;
+    }
+    return containsTag;
+  }
+
+  /**
+   * Checks for a collision between two rectangles by checking for overlap in their positions.
+   * @param {BoxCollider} collider1 
+   * @param {BoxCollider} collider2 
+   */
+  static AxisAlignedBoundingBox(collider1, collider2) {
+    if (collider1.shape.position.x <= collider2.shape.position.x + collider2.shape.width &&
+      collider1.shape.position.x + collider1.shape.width >= collider2.shape.position.x &&
+      collider1.shape.position.y <= collider2.shape.position.y + collider2.shape.height &&
+      collider1.shape.position.y + collider1.shape.height >= collider2.shape.position.y ) {
       return true;
     } else {
       return false;
@@ -210,13 +283,13 @@ class CollisionManager
 
   /**
    * Checks for a collision between two circles using the distance between their centres and their radii.
-   * @param {Circle} circle1 
-   * @param {Circle} circle2 
+   * @param {CircleCollider} collider1 
+   * @param {CircleCollider} collider2 
    */
-  static CircleCollision(circle1, circle2)
+  static CircleCollision(collider1, collider2)
   {
-    var distance = MathHelper.distance(circle1.position, circle2.position);
-    if (distance < circle1.radius + circle2.radius) {
+    var distance = MathHelper.distance(collider1.shape.position, collider2.shape.position);
+    if (distance < collider1.shape.radius + collider2.shape.radius) {
       return true;
     } else {
       return false;
@@ -225,20 +298,20 @@ class CollisionManager
 
   /**
    * Checks for a collision between two convex polygons by projecting them onto an axis and then checking for overlap.
-   * @param {Polygon} polygon1 
-   * @param {Polygon} polygon2 
+   * @param {PolygonCollider} collider1 
+   * @param {PolygonCollider} collider2 
    */
-  static SeperatingAxisTheorem(polygon1, polygon2)
+  static SeperatingAxisTheorem(collider1, collider2)
   {
     //  Get the axes
-    var axes1 = polygon1.Axes();
-    var axes2 = polygon2.Axes();
+    var axes1 = collider1.shape.Axes();
+    var axes2 = collider2.shape.Axes();
     //  Loop over the axes for polygon1
     for (var i = 0; i < axes1.length; i++) {
       var axis = axes1[i];
       //  Project both polygons onto the axis
-      var p1 = polygon1.project(axis);
-      var p2 = polygon2.project(axis);
+      var p1 = collider1.shape.project(axis);
+      var p2 = collider2.shape.project(axis);
       //  Do the projections overlap? if no we can exit
       if (!CollisionManager.Overlaps(p1, p2)) {
         return false;
@@ -248,8 +321,8 @@ class CollisionManager
     for (var i = 0; i < axes2.length; i++) {
       var axis = axes2[i];
       //  Project both polygons onto the axis
-      var p1 = polygon1.project(axis);
-      var p2 = polygon2.project(axis);
+      var p1 = collider1.shape.project(axis);
+      var p2 = collider2.shape.project(axis);
       //  Do the projections overlap? if no we can exit
       if (!CollisionManager.Overlaps(p1, p2)) {
         return false;
