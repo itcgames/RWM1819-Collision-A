@@ -27,8 +27,7 @@ class CollisionManager
   /**
    * 
    */
-  checkBoxColliderArray()
-  {
+  checkBoxColliderArray() {
     var boxResult;
     if (this.boxColliderArray.length > 0) {
       boxResult = this.checkArray(this.boxColliderArray, CollisionManager.AxisAlignedBoundingBox);
@@ -39,8 +38,7 @@ class CollisionManager
   /**
    * 
    */
-  checkCircleColliderArray()
-  {
+  checkCircleColliderArray() {
     var circleResult;
     if (this.circleColliderArray.length > 0) {
       var circleResult = this.checkArray(this.circleColliderArray, CollisionManager.CircleCollision);
@@ -51,8 +49,7 @@ class CollisionManager
   /**
    * 
    */
-  checkPolygonColliderArray()
-  {
+  checkPolygonColliderArray() {
     var polygonResult;
     if (this.polygonColliderArray.length > 0) {
       polygonResult = this.checkArray(this.polygonColliderArray, CollisionManager.SeperatingAxisTheorem);
@@ -160,8 +157,7 @@ class CollisionManager
 
         if (inputArray[i] !== inputArray[j] && result[i][j] === undefined && ignoreObject === false){
           var testResult = inputFunction(inputArray[i], inputArray[j]);
-          result[i][j] = testResult;
-          result[j][i] = testResult;          
+          result[i][j] = testResult;        
         }
       }
     }
@@ -239,8 +235,7 @@ class CollisionManager
    * 
    * @param {Boolean[]} results 
    */
-  static GetTagsOfCollided(results)
-  {
+  getTagsOfCollided(results) {
     var collidedObjectTags = [];
     for(var i = 0; i < results.length; i++) {
       if (results[i] === true) {
@@ -255,8 +250,7 @@ class CollisionManager
    * @param {String[]} array 
    * @param {String} tag 
    */
-  static ArrayContainsTag(array, tag)
-  {
+  static ArrayContainsTag(array, tag) {
     var containsTag = false;
     var index = array.indexOf(tag);
     if (index > -1) {
@@ -286,8 +280,7 @@ class CollisionManager
    * @param {CircleCollider} collider1 
    * @param {CircleCollider} collider2 
    */
-  static CircleCollision(collider1, collider2)
-  {
+  static CircleCollision(collider1, collider2) {
     var distance = MathHelper.distance(collider1.shape.position, collider2.shape.position);
     if (distance < collider1.shape.radius + collider2.shape.radius) {
       return true;
@@ -301,8 +294,7 @@ class CollisionManager
    * @param {PolygonCollider} collider1 
    * @param {PolygonCollider} collider2 
    */
-  static SeperatingAxisTheorem(collider1, collider2)
-  {
+  static SeperatingAxisTheorem(collider1, collider2) {
     //  Get the axes
     var axes1 = collider1.shape.Axes();
     var axes2 = collider2.shape.Axes();
