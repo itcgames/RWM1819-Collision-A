@@ -20,6 +20,9 @@ class Game
         gameNs.game.collisionManager.addPolygonCollider(new PolygonCollider([new Vector2(400,50), new Vector2(420, 50), new Vector2(420, 150), new Vector2(400, 150)], ['door']));
         gameNs.game.collisionManager.addPolygonCollider(new PolygonCollider([new Vector2(600,25), new Vector2(610, 10), new Vector2(630, 40), new Vector2(650, 70), new Vector2(660, 90), new Vector2(640, 120), new Vector2(620, 150), new Vector2(600, 80)], ['rock']));
 
+        var instructions = "Controls for demo: \n   Movement: WASD";
+        console.log(instructions);
+
         document.addEventListener('keydown', function(event) {
             event.preventDefault(); 
             //  Movement up and down
@@ -39,7 +42,10 @@ class Game
 
     update() {
         //  Update game objects.
-        gameNs.game.collisionResults = gameNs.game.collisionManager.checkPolygonColliderArray();
+        var collisionResults = gameNs.game.collisionManager.checkPolygonColliderArray();
+        if (gameNs.game.collisionManager.collidedWithTag(gameNs.game.player, collisionResults, 'rock')) {
+            console.log('collided with rock.');
+        }
         //  Draw new frame.
         gameNs.game.render();
         // Recursive call to Update method.

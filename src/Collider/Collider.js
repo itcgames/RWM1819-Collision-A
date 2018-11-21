@@ -16,6 +16,7 @@ class Collider
     /**
      * 
      * @param {String} tag 
+     * @return {Boolean}
      */
     containsObjectTag(tag)
     {
@@ -30,6 +31,7 @@ class Collider
     /**
      * 
      * @param {String} tag 
+     * @return {Boolean}
      */
     containsIgnoreTag(tag)
     {

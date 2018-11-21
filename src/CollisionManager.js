@@ -25,7 +25,7 @@ class CollisionManager
   }
 
   /**
-   * 
+   * @return {Boolean[][]}
    */
   checkBoxColliderArray() {
     var boxResult;
@@ -36,7 +36,7 @@ class CollisionManager
   }
 
   /**
-   * 
+   * @return {Boolean[][]}
    */
   checkCircleColliderArray() {
     var circleResult;
@@ -47,7 +47,7 @@ class CollisionManager
   }
 
   /**
-   * 
+   * @return {Boolean[][]}
    */
   checkPolygonColliderArray() {
     var polygonResult;
@@ -123,6 +123,7 @@ class CollisionManager
    * Checks all objects in the inputArray with the inputFunction to see if there is any collisions and records the results.
    * @param {Collider[]} inputArray 
    * @param {Function} inputFunction 
+   * @return {Boolean[][]}
    */
   checkArray(inputArray, inputFunction) {
     /**
@@ -233,36 +234,46 @@ class CollisionManager
 
   /**
    * 
-   * @param {Boolean[]} results 
+   * @param {Collider} collider
+   * @param {Boolean[][]} collisionResults 
+   * @param {String} tag 
+   * @return {Boolean}
    */
-  getTagsOfCollided(results) {
-    var collidedObjectTags = [];
-    for(var i = 0; i < results.length; i++) {
-      if (results[i] === true) {
-        collidedObjectTags.push.apply(collidedObjectTags, this.polygonColliderArray[i].objectTags);
+  collidedWithTag(collider, collisionResults, tag) {
+    var index = this.polygonColliderArray.indexOf(collider);
+    var result = false;
+    if (index > -1) {
+      var collidedObjectTags = [];
+      for(var i = 0; i < collisionResults[index].length; i++) {
+        if (collisionResults[index][i] === true) {
+          collidedObjectTags.push.apply(collidedObjectTags, this.polygonColliderArray[i].objectTags);
+        }
       }
+      result = CollisionManager.ArrayContainsElement(collidedObjectTags, tag);
     }
-    return collidedObjectTags;
+    return result;
   }
 
   /**
    * 
-   * @param {String[]} array 
-   * @param {String} tag 
+   * @param {Array} array 
+   * @param {Element} element 
+   * @return {Boolean}
    */
-  static ArrayContainsTag(array, tag) {
-    var containsTag = false;
-    var index = array.indexOf(tag);
+  static ArrayContainsElement(array, element) {
+    var containsElement = false;
+    var index = array.indexOf(element);
     if (index > -1) {
-      containsTag = true;
+      containsElement = true;
     }
-    return containsTag;
+    return containsElement;
   }
 
   /**
    * Checks for a collision between two rectangles by checking for overlap in their positions.
    * @param {BoxCollider} collider1 
    * @param {BoxCollider} collider2 
+   * @return {Boolean}
    */
   static AxisAlignedBoundingBox(collider1, collider2) {
     if (collider1.shape.position.x <= collider2.shape.position.x + collider2.shape.width &&
@@ -279,6 +290,7 @@ class CollisionManager
    * Checks for a collision between two circles using the distance between their centres and their radii.
    * @param {CircleCollider} collider1 
    * @param {CircleCollider} collider2 
+   * @return {Boolean}
    */
   static CircleCollision(collider1, collider2) {
     var distance = MathHelper.distance(collider1.shape.position, collider2.shape.position);
@@ -293,6 +305,7 @@ class CollisionManager
    * Checks for a collision between two convex polygons by projecting them onto an axis and then checking for overlap.
    * @param {PolygonCollider} collider1 
    * @param {PolygonCollider} collider2 
+   * @return {Boolean}
    */
   static SeperatingAxisTheorem(collider1, collider2) {
     //  Get the axes
@@ -328,6 +341,7 @@ class CollisionManager
    * Checks if the projections overlap
    * @param {Array} proj1 
    * @param {Array} proj2 
+   * @return {Boolean}
    */
   static Overlaps(proj1, proj2) {
     if (proj1['min'] <= proj2['max'] && proj2['min'] <= proj1['max']) {

@@ -18,8 +18,7 @@ class Game
         gameNs.game.player = new PolygonCollider([new Vector2(600,25), new Vector2(610, 10), new Vector2(630, 40), new Vector2(650, 70), new Vector2(660, 90), new Vector2(640, 120), new Vector2(620, 150), new Vector2(600, 80)]);
         gameNs.game.collisionManager.addPolygonCollider(gameNs.game.player);    //  Player is at position 0 in our array.
 
-        var instructions = "";
-
+        var instructions = "Controls for demo: \n   Movement: WASD \n   Rotation: left and right arrows \n   Scale: up and down arrows";
         console.log(instructions);
 
         document.addEventListener('keydown', function(event) {

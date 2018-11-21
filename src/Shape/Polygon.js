@@ -11,6 +11,7 @@ class Polygon extends Shape
 
     /**
      * Returns the centre of the shape.
+     * @return {Vector2}
      */
     getCentre() {        
         //  https://stackoverflow.com/questions/9692448/how-can-you-find-the-centroid-of-a-concave-irregular-polygon-in-javascript
@@ -82,6 +83,7 @@ class Polygon extends Shape
     /**
      * Projects the vertices of the shape onto the axis.
      * @param {Vector2} axis 
+     * @return {Array}
      */
     project(axis) {
         var min = axis.dotProduct(this.vertices[0]);
@@ -103,6 +105,7 @@ class Polygon extends Shape
     /**
      * Returns an array of the axes the shapes must be projected onto.
      * @returns {Vector2[]}
+     * @return {Array}
      */
     Axes() {
         var axes = [];
@@ -181,6 +184,7 @@ class Polygon extends Shape
      * 
      * @param {Scalar[][]} m1 
      * @param {Scalar[][]} m2 
+     * @return {Scalar[][]}
      */
     multiplyMatrices(m1, m2) {
         var result = [];
@@ -201,6 +205,7 @@ class Polygon extends Shape
      * 
      * @param {Scalar[][]} m1 
      * @param {Scalar[][]} m2 
+     * @return {Scalar[][]}
      */
     addMatrices(m1, m2) {
         var result = [];
@@ -213,7 +218,8 @@ class Polygon extends Shape
     /**
      * 
      * @param {Scalar[][]} m1 
-     * @param {Scalar[][]} m2 
+     * @param {Scalar[][]} m2
+     * @return {Scalar[][]} 
      */
     subMatrices(m1, m2) {
         var result = [];
