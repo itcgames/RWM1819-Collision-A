@@ -2,11 +2,11 @@ class PolygonCollider extends Collider
 {
     /**
      * The default constructor of the class.
-     * @param {Polygon} polygon 
+     * @param {Vector2[]} vertices 
      * @param {String[]} objectTags
      * @param {String[]} ignoreTags
      */
-    constructor(polygon, objectTags = [], ignoreTags = []) {
-        super(polygon, objectTags, ignoreTags);  //  Call the parent classes constructor.
+    constructor(vertices, objectTags = [], ignoreTags = []) {
+        super(new Polygon(vertices), objectTags, ignoreTags);  //  Call the parent classes constructor.
     }
 }

@@ -15,9 +15,9 @@ class Game
 
         //  Initialise game objects
         gameNs.game.collisionManager = new CollisionManager();
-        gameNs.game.collisionManager.addBoxCollider(new BoxCollider(new Rectangle(new Vector2(0,0), 50, 50)));
-        gameNs.game.collisionManager.addBoxCollider(new BoxCollider(new Rectangle(new Vector2(120,520), 50, 50)));
-        gameNs.game.collisionManager.addBoxCollider(new BoxCollider(new Rectangle(new Vector2(100,500), 50, 50)));
+        gameNs.game.collisionManager.addBoxCollider(new BoxCollider(new Vector2(0,0), 50, 50));
+        gameNs.game.collisionManager.addBoxCollider(new BoxCollider(new Vector2(120,520), 50, 50));
+        gameNs.game.collisionManager.addBoxCollider(new BoxCollider(new Vector2(100,500), 50, 50));
     }
 
     update() {

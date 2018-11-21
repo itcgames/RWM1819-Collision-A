@@ -15,9 +15,9 @@ class Game
 
         //  Initialise game objects
         gameNs.game.collisionManager = new CollisionManager();
-        gameNs.game.collisionManager.addCircleCollider(new CircleCollider(new Circle(new Vector2(0,0), 50)));
-        gameNs.game.collisionManager.addCircleCollider(new CircleCollider(new Circle(new Vector2(120,520), 50)));
-        gameNs.game.collisionManager.addCircleCollider(new CircleCollider(new Circle(new Vector2(100,500), 50)));
+        gameNs.game.collisionManager.addCircleCollider(new CircleCollider(new Vector2(0,0), 50));
+        gameNs.game.collisionManager.addCircleCollider(new CircleCollider(new Vector2(120,520), 50));
+        gameNs.game.collisionManager.addCircleCollider(new CircleCollider(new Vector2(100,500), 50));
     }
 
     update() {

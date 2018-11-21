@@ -15,25 +15,39 @@ class Game
 
         //  Initialise game objects
         gameNs.game.collisionManager = new CollisionManager();
-        gameNs.game.player = new PolygonCollider(new Polygon([new Vector2(600,225), new Vector2(610, 210), new Vector2(630, 240), new Vector2(650, 280), new Vector2(640, 290), new Vector2(630, 320), new Vector2(620, 350), new Vector2(600, 280)]));
+        gameNs.game.player = new PolygonCollider([new Vector2(600,25), new Vector2(610, 10), new Vector2(630, 40), new Vector2(650, 70), new Vector2(660, 90), new Vector2(640, 120), new Vector2(620, 150), new Vector2(600, 80)]);
         gameNs.game.collisionManager.addPolygonCollider(gameNs.game.player);    //  Player is at position 0 in our array.
 
+        var instructions = "";
+
+        console.log(instructions);
+
         document.addEventListener('keydown', function(event) {
-            event.preventDefault();            
-            if(event.keyCode == 37) {   //  Left arrow.
+            event.preventDefault();   
+
+            //  Movement up and down
+            if(event.keyCode == 87) {   //  W key.
+                gameNs.game.player.shape.move(0, -5);  
+            } else if(event.keyCode == 83) {    //  S key.
+                gameNs.game.player.shape.move(0, 5);                  
+            }
+            //  Movement left and right.
+            if(event.keyCode == 65) {   //  A key.
                 gameNs.game.player.shape.move(-5, 0);  
-            } else if(event.keyCode == 39) {    //  Right arrow.
+            } else if(event.keyCode == 68) {    //  D key.
                 gameNs.game.player.shape.move(5, 0);                  
             }
-
-            if (event.keyCode == 38) {  //  Up arrow.
-                gameNs.game.player.shape.rotate(5);   
-            } else if (event.keyCode == 40) {   //  Down arrow. 
-                gameNs.game.player.shape.rotate(-5);   
+            //  Rotation
+            if(event.keyCode == 37) {   //  Left arrow.
+                gameNs.game.player.shape.rotate(-5);  
+            } else if(event.keyCode == 39) {    //  Right arrow.
+                gameNs.game.player.shape.rotate(5);                   
             }
-
-            if (event.keyCode == 32) {  //  Space.
+            //  Scale
+            if (event.keyCode == 38) {  //  Up arrow.
                 gameNs.game.player.shape.scale(2);   
+            } else if (event.keyCode == 40) {   //  Down arrow. 
+                gameNs.game.player.shape.scale(0.5);   
             }
         });
     }
