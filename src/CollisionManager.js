@@ -374,11 +374,7 @@ class CollisionManager
    */
   static IndexOfElement(array, element)
   {
-    var index = array.indexOf(element);
-    if (index > -1) {
-      containsElement = true;
-    }
-    return index;
+    return array.indexOf(element);
   }
 
   /**
