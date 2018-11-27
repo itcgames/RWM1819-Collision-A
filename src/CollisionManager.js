@@ -46,6 +46,15 @@ class CollisionManager
     return circleResult
   }
 
+  checkCircleAndBoxColliderArray()
+  {
+    var collisionResult;
+
+    
+
+    return collisionResult;
+  }
+
   /**
    * @return {Boolean[][]}
    */
@@ -175,6 +184,33 @@ class CollisionManager
     return result;
   }
 
+
+
+  /**
+   * Checks all objects in the inputArray with the inputFunction to see if there is any collisions and records the results.
+   * @param {Collider[]} inputArray1
+   * @param {Collider[]} inputArray2
+   * @param {Function} inputFunction 
+   * @return {Boolean[][]}
+   */
+  checkArrays(inputArray1, inputArray2, inputFunction) {
+    /**
+     * The result array is set up as follows:
+     * 
+     *                     array2.element1  array2.element2  array2.element3    array2....
+     *   array1.element1 |       -        |                |                |
+     *   array1.element2 |                |       -        |                |
+     *   array1.element3 |                |                |       -        |
+     *   array1....      |                |                |                |       -
+     *  
+     * The result of the tests are put into the appropriate positions to prevent retesting the same elements against eachother.
+     */
+    var result = [];
+    for(var i = 0; i < inputArray1.length; i++){
+
+    }
+  }
+
   /**
    * Adds a boxCollider to boxColliderArray.
    * @param {BoxCollider} boxCollider 
@@ -267,6 +303,24 @@ class CollisionManager
       containsElement = true;
     }
     return containsElement;
+  }
+
+  /**
+   * 
+   * @param {BoxCollider} boxCollider 
+   * @param {CircleCollider} circleCollider 
+   */
+  static CircleRectangleCollision(boxCollider, circleCollider)
+  {
+    var result = false;
+    var distX = Math.abs(circleCollider.shape.position.x - (boxCollider.shape.position.x + (boxCollider.shape.width / 2)));
+    var distY = Math.abs(circleCollider.shape.position.y - (boxCollider.shape.position.y + (boxCollider.shape.height / 2)));
+    var dX = boxCollider.shape.position.x - (boxCollider.shape.width / 2);
+    var dY = boxCollider.shape.position.y - (boxCollider.shape.height / 2);
+    if (distX <= (boxCollider.shape.width / 2) || distY <= (boxCollider.shape.height / 2) || (dX * dX) + (dY * dY) <= (circleCollider.shape.radius * circleCollider.shape.radius)){
+      result = true;
+    }
+    return result;
   }
 
   /**
