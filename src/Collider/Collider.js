@@ -18,8 +18,7 @@ class Collider
      * @param {String} tag 
      * @return {Boolean}
      */
-    containsObjectTag(tag)
-    {
+    containsObjectTag(tag) {
         var containsTag = false;
         var index = this.objectTags.indexOf(tag);
         if (index > -1) {
@@ -33,8 +32,7 @@ class Collider
      * @param {String} tag 
      * @return {Boolean}
      */
-    containsIgnoreTag(tag)
-    {
+    containsIgnoreTag(tag) {
         var containsTag = false;
         var index = this.ignoreTags.indexOf(tag);
         if (index > -1) {
@@ -42,4 +40,11 @@ class Collider
         }
         return containsTag;
     } 
+
+    /**
+     * 
+     */
+    get position() {
+        return this.shape.position;
+    }
 }

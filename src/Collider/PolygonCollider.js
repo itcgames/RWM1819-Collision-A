@@ -9,4 +9,9 @@ class PolygonCollider extends Collider
     constructor(vertices, objectTags = [], ignoreTags = []) {
         super(new Polygon(vertices), objectTags, ignoreTags);  //  Call the parent classes constructor.
     }
+
+    get vertices()
+    {
+        return this.shape.vertices;
+    }
 }

@@ -47,11 +47,15 @@ class CollisionManager
     return circleResult
   }
 
+  /**
+   * @return {Boolean[][][]} Returns a boolean dictionary. The results for checking the boxColliders against the circleColliders is stored behind the key = 'BoxResults' while
+   * the results for checking the circleColliders against the boxColliders is stored behind the key = 'CircleResults'.
+   */
   checkCircleAndBoxColliderArray()
   {
     var collisionResult = [];
     if (this.circleColliderArray.length > 0 && this.boxColliderArray.length > 0){
-      collisionResult = this.checkArrays(this.boxColliderArray, this.circleColliderArray, CollisionManager.CircleRectangleCollision);
+      collisionResult = this.checkArrays(this.boxColliderArray, this.circleColliderArray, 'BoxResults', 'CircleResults', CollisionManager.CircleRectangleCollision);
     }
     return collisionResult;
   }
@@ -191,14 +195,16 @@ class CollisionManager
    * Checks all objects in the inputArray with the inputFunction to see if there is any collisions and records the results.
    * @param {Collider[]} inputArray1
    * @param {Collider[]} inputArray2
+   * @param {String} resultLabel1 the key that will be used for the results of inputArray1 compared to inputArray2.
+   * @param {String} resultLabel2 the key that will be used for the results of inputArray2 compared to inputArray1.
    * @param {Function} inputFunction 
    * @return {Boolean[][][]}
    */
-  checkArrays(inputArray1, inputArray2, inputFunction) {
+  checkArrays(inputArray1, inputArray2, resultLabel1, resultLabel2, inputFunction) {
     /**
      * The result array is set up as follows:
      *           
-     * ['Array1']
+     * [resultLabel1]
      *                     array2.element1  array2.element2  array2.element3    array2....
      *   array1.element1 |                |                |                |
      *   array1.element2 |                |                |                |
@@ -206,19 +212,22 @@ class CollisionManager
      *   array1....      |                |                |                |     
      * 
      * 
-     * ['Array2']
+     * [resultLabel2]
      *                     array1.element1  array1.element2  array1.element3    array1....
      *   array2.element1 |                |                |                |
      *   array2.element2 |                |                |                |
      *   array2.element3 |                |                |                |
      *   array2....      |                |                |                |     
      *  
+     *  We can't use the same results for checking if for example array1.element1 is colliding with array2.element1 as array1.element1 may have an 
+     *  ignore tag that array2.element1 is looking for.
      */
     var result = [];
-    result['Array1'] = [];
-    
+
+    //  Test inputArray1 against inputArray2.
+    result[resultLabel1] = []; 
     for(var i = 0; i < inputArray1.length; i++){
-      result['Array1'][i] = [];
+      result[resultLabel1][i] = [];
       for(var j = 0; j < inputArray2.length; j++){
         //  Check if the current element should be ignored.
         var ignoreObject = false;
@@ -234,26 +243,25 @@ class CollisionManager
 
         if (ignoreObject === false) {
           var testResult = inputFunction(inputArray1[i], inputArray2[j]);
-          result['Array1'][i][j] = testResult;
+          result[resultLabel1][i][j] = testResult;
         }
       }
     }
-
     //  Set each elements own colliding boolean to match their status.
-    for (var i = 0; i < result['Array1'].length; i++) {
+    for (var i = 0; i < result[resultLabel1].length; i++) {
       var colliding = false;
-      for (var j = 0; j < result['Array1'][i].length; j++) {
-        if (result['Array1'][i][j] === true) {
+      for (var j = 0; j < result[resultLabel1][i].length; j++) {
+        if (result[resultLabel1][i][j] === true) {
           colliding = true;
         }
       }
       inputArray1[i].colliding = colliding;      
     }
 
-    result['Array2'] = [];
-
+    //  Test inputArray2 against inputArray1.
+    result[resultLabel2] = [];
     for(var i = 0; i < inputArray2.length; i++){
-      result['Array2'][i] = [];
+      result[resultLabel2][i] = [];
       for(var j = 0; j < inputArray1.length; j++){
         //  Check if the current element should be ignored.
         var ignoreObject = false;
@@ -269,15 +277,15 @@ class CollisionManager
 
         if (ignoreObject === false) {
           var testResult = inputFunction(inputArray1[j], inputArray2[i]);
-          result['Array2'][i][j] = testResult;
+          result[resultLabel2][i][j] = testResult;
         }
       }
     }
-
-    for (var i = 0; i < result['Array2'].length; i++) {
+    //  Set each elements own colliding boolean to match their status.
+    for (var i = 0; i < result[resultLabel2].length; i++) {
       var colliding = false;
-      for (var j = 0; j < result['Array2'][i].length; j++) {
-        if (result['Array2'][i][j] === true) {
+      for (var j = 0; j < result[resultLabel2][i].length; j++) {
+        if (result[resultLabel2][i][j] === true) {
           colliding = true;
         }
       }
