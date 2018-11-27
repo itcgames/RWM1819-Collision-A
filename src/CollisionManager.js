@@ -320,7 +320,7 @@ class CollisionManager
     var dX = distX - (boxCollider.shape.width / 2);
     var dY = distY - (boxCollider.shape.height / 2);
 
-    if (distX <= (boxCollider.shape.width / 2) && distY <= (boxCollider.shape.height / 2)){
+    if (distX <= (boxCollider.shape.width / 2) + circleCollider.shape.radius && distY <= (boxCollider.shape.height / 2) + circleCollider.shape.radius){
       result = true;
     } else if ((dX * dX) + (dY * dY) <= (circleCollider.shape.radius * circleCollider.shape.radius)) {
       result = true;
