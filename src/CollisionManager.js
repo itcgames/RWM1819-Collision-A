@@ -346,19 +346,19 @@ class CollisionManager
 
   /**
    * 
-   * @param {Collider} collider
-   * @param {Boolean[][]} collisionResults 
+   * @param {Collider} colliderIndex the index of the collider in the results array.
+   * @param {Boolean[]} collisionResults 
+   * @param {Collider[]} checkArray the array that you want to test the collider against.
    * @param {String} tag 
    * @return {Boolean}
    */
-  collidedWithTag(collider, collisionResults, tag) {
-    var index = this.polygonColliderArray.indexOf(collider);
+  static CollidedWithTag(colliderIndex, collisionResults, checkArray, tag) {
     var result = false;
     if (index > -1) {
       var collidedObjectTags = [];
-      for(var i = 0; i < collisionResults[index].length; i++) {
-        if (collisionResults[index][i] === true) {
-          collidedObjectTags.push.apply(collidedObjectTags, this.polygonColliderArray[i].objectTags);
+      for(var i = 0; i < collisionResults[colliderIndex].length; i++) {
+        if (collisionResults[colliderIndex][i] === true) {
+          collidedObjectTags.push.apply(collidedObjectTags, checkArray[i].objectTags);
         }
       }
       result = CollisionManager.ArrayContainsElement(collidedObjectTags, tag);
