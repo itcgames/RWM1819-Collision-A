@@ -313,13 +313,19 @@ class CollisionManager
   static CircleRectangleCollision(boxCollider, circleCollider)
   {
     var result = false;
+
     var distX = Math.abs(circleCollider.shape.position.x - (boxCollider.shape.position.x + (boxCollider.shape.width / 2)));
     var distY = Math.abs(circleCollider.shape.position.y - (boxCollider.shape.position.y + (boxCollider.shape.height / 2)));
-    var dX = boxCollider.shape.position.x - (boxCollider.shape.width / 2);
-    var dY = boxCollider.shape.position.y - (boxCollider.shape.height / 2);
-    if (distX <= (boxCollider.shape.width / 2) || distY <= (boxCollider.shape.height / 2) || (dX * dX) + (dY * dY) <= (circleCollider.shape.radius * circleCollider.shape.radius)){
+
+    var dX = distX - (boxCollider.shape.width / 2);
+    var dY = distY - (boxCollider.shape.height / 2);
+
+    if (distX <= (boxCollider.shape.width / 2) && distY <= (boxCollider.shape.height / 2)){
+      result = true;
+    } else if ((dX * dX) + (dY * dY) <= (circleCollider.shape.radius * circleCollider.shape.radius)) {
       result = true;
     }
+
     return result;
   }
 
