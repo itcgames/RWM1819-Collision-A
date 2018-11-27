@@ -352,15 +352,33 @@ class CollisionManager
    * @param {String} tag 
    * @return {Boolean}
    */
-  static CollidedWithTag(colliderIndex, collisionResults, checkArray, tag) {
-    var collidedObjectTags = [];
-    for(var i = 0; i < collisionResults[colliderIndex].length; i++) {
-      if (collisionResults[colliderIndex][i] === true) {
-        collidedObjectTags.push.apply(collidedObjectTags, checkArray[i].objectTags);
+  static CollidedWithTag(colliderIndex, collisionResults, checkArray, tag) {    
+    var results = [];
+    if (colliderIndex > -1) {
+      var collidedObjectTags = [];
+      for(var i = 0; i < collisionResults[colliderIndex].length; i++) {
+        if (collisionResults[colliderIndex][i] === true) {
+          collidedObjectTags.push.apply(collidedObjectTags, checkArray[i].objectTags);
+        }
       }
+      results = CollisionManager.ArrayContainsElement(collidedObjectTags, tag);
     }
-    
-    return CollisionManager.ArrayContainsElement(collidedObjectTags, tag);;
+    return results;
+  }
+
+  /**
+   * 
+   * @param {Array} array 
+   * @param {Element} element 
+   * @return {Scalar}
+   */
+  static IndexOfElement(array, element)
+  {
+    var index = array.indexOf(element);
+    if (index > -1) {
+      containsElement = true;
+    }
+    return index;
   }
 
   /**
