@@ -36,14 +36,24 @@ class Game
             } else if(event.keyCode == 68) {    //  D key.
                 gameNs.game.circle.shape.position.x += 5;                  
             }
+
+            //  Movement up and down
+            if(event.keyCode == 38) {   //  Up arrow.
+                gameNs.game.box.shape.position.y += -5;  
+            } else if(event.keyCode == 40) {    //  Down arrow.
+                gameNs.game.box.shape.position.y += 5;                  
+            }
+            //  Movement left and right.
+            if(event.keyCode == 37) {   //  Left arrow.
+                gameNs.game.box.shape.position.x += -5;  
+            } else if(event.keyCode == 39) {    //  Right arrow.
+                gameNs.game.box.shape.position.x += 5;                  
+            }
         });
     }
 
     update() {
-        //  Update game objects.
-        if (CollisionManager.CircleRectangleCollision(gameNs.game.box, gameNs.game.circle)){
-            console.log('Yes');
-        }
+        gameNs.game.collisionManager.checkCircleAndBoxColliderArray();
 
         //  Draw new frame.
         gameNs.game.render();

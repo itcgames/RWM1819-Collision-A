@@ -21,6 +21,7 @@ class CollisionManager
   checkAllColliders() {
     this.checkBoxColliderArray();
     this.checkCircleColliderArray();
+    this.checkCircleAndBoxColliderArray();
     this.checkPolygonColliderArray();
   }
 
@@ -48,10 +49,10 @@ class CollisionManager
 
   checkCircleAndBoxColliderArray()
   {
-    var collisionResult;
-
-    
-
+    var collisionResult = [];
+    if (this.circleColliderArray.length > 0 && this.boxColliderArray.length > 0){
+      collisionResult = this.checkArrays(this.boxColliderArray, this.circleColliderArray, CollisionManager.CircleRectangleCollision);
+    }
     return collisionResult;
   }
 
@@ -191,24 +192,99 @@ class CollisionManager
    * @param {Collider[]} inputArray1
    * @param {Collider[]} inputArray2
    * @param {Function} inputFunction 
-   * @return {Boolean[][]}
+   * @return {Boolean[][][]}
    */
   checkArrays(inputArray1, inputArray2, inputFunction) {
     /**
      * The result array is set up as follows:
-     * 
+     *           
+     * ['Array1']
      *                     array2.element1  array2.element2  array2.element3    array2....
-     *   array1.element1 |       -        |                |                |
-     *   array1.element2 |                |       -        |                |
-     *   array1.element3 |                |                |       -        |
-     *   array1....      |                |                |                |       -
+     *   array1.element1 |                |                |                |
+     *   array1.element2 |                |                |                |
+     *   array1.element3 |                |                |                |
+     *   array1....      |                |                |                |     
+     * 
+     * 
+     * ['Array2']
+     *                     array1.element1  array1.element2  array1.element3    array1....
+     *   array2.element1 |                |                |                |
+     *   array2.element2 |                |                |                |
+     *   array2.element3 |                |                |                |
+     *   array2....      |                |                |                |     
      *  
-     * The result of the tests are put into the appropriate positions to prevent retesting the same elements against eachother.
      */
     var result = [];
+    result['Array1'] = [];
+    
     for(var i = 0; i < inputArray1.length; i++){
+      result['Array1'][i] = [];
+      for(var j = 0; j < inputArray2.length; j++){
+        //  Check if the current element should be ignored.
+        var ignoreObject = false;
+        var whileIndex = 0;
+        while (ignoreObject === false && whileIndex < inputArray2[j].objectTags.length)
+        {
+          var index = inputArray1[i].ignoreTags.indexOf(inputArray2[j].objectTags[whileIndex]);
+          if (index > -1) {
+            ignoreObject = true;
+          }
+          whileIndex++;
+        }
 
+        if (ignoreObject === false) {
+          var testResult = inputFunction(inputArray1[i], inputArray2[j]);
+          result['Array1'][i][j] = testResult;
+        }
+      }
     }
+
+    //  Set each elements own colliding boolean to match their status.
+    for (var i = 0; i < result['Array1'].length; i++) {
+      var colliding = false;
+      for (var j = 0; j < result['Array1'][i].length; j++) {
+        if (result['Array1'][i][j] === true) {
+          colliding = true;
+        }
+      }
+      inputArray1[i].colliding = colliding;      
+    }
+
+    result['Array2'] = [];
+
+    for(var i = 0; i < inputArray2.length; i++){
+      result['Array2'][i] = [];
+      for(var j = 0; j < inputArray1.length; j++){
+        //  Check if the current element should be ignored.
+        var ignoreObject = false;
+        var whileIndex = 0;
+        while (ignoreObject === false && whileIndex < inputArray1[j].objectTags.length)
+        {
+          var index = inputArray2[i].ignoreTags.indexOf(inputArray1[j].objectTags[whileIndex]);
+          if (index > -1) {
+            ignoreObject = true;
+          }
+          whileIndex++;
+        }
+
+        if (ignoreObject === false) {
+          var testResult = inputFunction(inputArray1[j], inputArray2[i]);
+          result['Array2'][i][j] = testResult;
+        }
+      }
+    }
+
+    for (var i = 0; i < result['Array2'].length; i++) {
+      var colliding = false;
+      for (var j = 0; j < result['Array2'][i].length; j++) {
+        if (result['Array2'][i][j] === true) {
+          colliding = true;
+        }
+      }
+      inputArray2[i].colliding = colliding;      
+    }
+
+    return result;
   }
 
   /**
@@ -313,19 +389,15 @@ class CollisionManager
   static CircleRectangleCollision(boxCollider, circleCollider)
   {
     var result = false;
-
     var distX = Math.abs(circleCollider.shape.position.x - (boxCollider.shape.position.x + (boxCollider.shape.width / 2)));
     var distY = Math.abs(circleCollider.shape.position.y - (boxCollider.shape.position.y + (boxCollider.shape.height / 2)));
-
     var dX = distX - (boxCollider.shape.width / 2);
     var dY = distY - (boxCollider.shape.height / 2);
-
-    if (distX <= (boxCollider.shape.width / 2) + circleCollider.shape.radius && distY <= (boxCollider.shape.height / 2) + circleCollider.shape.radius){
+    if (distX <= (boxCollider.shape.width / 2) + circleCollider.shape.radius && distY <= (boxCollider.shape.height / 2) + circleCollider.shape.radius) {
       result = true;
     } else if ((dX * dX) + (dY * dY) <= (circleCollider.shape.radius * circleCollider.shape.radius)) {
       result = true;
     }
-
     return result;
   }
 
