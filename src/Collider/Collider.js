@@ -11,6 +11,7 @@ class Collider
         this.shape = shape;
         this.objectTags = objectTags;
         this.ignoreTags = ignoreTags;
+        this.screenPos = new Vector2(0, 0);
     }
 
     /**
@@ -43,8 +44,25 @@ class Collider
 
     /**
      * 
+     * @param {Scalar} gridWidth 
+     * @param {Scalar} gridHeight 
+     */
+    updateSpatialHash(gridWidth, gridHeight) {
+        this.screenPos = new Vector2(Math.floor(this.position.x / gridWidth), Math.floor(this.position.y / gridHeight));
+    }
+
+    /**
+     * 
      */
     get position() {
         return this.shape.position;
+    }
+
+    /**
+     * 
+     * @param {Vector2} newPos
+     */
+    set position(newPos){
+        this.shape.position = newPos;
     }
 }

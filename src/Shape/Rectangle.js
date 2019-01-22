@@ -55,4 +55,23 @@ class Rectangle extends Shape
     triangleArea(point1, point2, point3) {
         return Math.abs((point1.x * (point2.y - point3.y) + point2.x * (point3.y - point1.y) + point3.x * (point1.y - point2.y)) / 2);
     }
+
+    /**
+     * Adds x and y to their respective object values.
+     * @param {Scalar} x 
+     * @param {Scalar} y 
+     */
+    move(x, y) {
+        this.position.x += x;
+        this.position.y += y;
+    }
+
+    /**
+     * Scales the Polygon keeping the centre point the same.
+     * @param {Scalar} scale 
+     */
+    scale(scale) {
+        this.width *= scale;
+        this.height *= scale;
+    }
 }

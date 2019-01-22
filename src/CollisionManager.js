@@ -169,8 +169,10 @@ class CollisionManager
             break;
           }
         }
+        
+        var checkCollision = this.compareSpatialHashingPositions(inputArray[i], inputArray[j]);
 
-        if (inputArray[i] !== inputArray[j] && result[i][j] === undefined && ignoreObject === false){
+        if (checkCollision === true && ignoreObject === false && inputArray[i] !== inputArray[j] && result[i][j] === undefined){
           var testResult = inputFunction(inputArray[i], inputArray[j]);
           result[i][j] = testResult;        
         }
@@ -350,6 +352,43 @@ class CollisionManager
     if (index > -1) {
       this.polygonColliderArray.splice(index, 1);
     }
+  }
+
+  /**
+   * 
+   * @param {Scalar} gridWidth 
+   * @param {Scalar} gridHeight 
+   */
+  updateSpatialHashing(gridWidth, gridHeight) {
+    this.boxColliderArray.forEach(boxElement => {
+      boxElement.updateSpatialHash(gridWidth, gridHeight);
+    });
+
+    this.circleColliderArray.forEach(circleElement => {
+      circleElement.updateSpatialHash(gridWidth, gridHeight);
+    });
+
+    this.polygonColliderArray.forEach(polyElement => {
+      polyElement.updateSpatialHash(gridWidth, gridHeight);
+    });
+  }
+
+  /**
+   * 
+   * @param {Collider} collider1 
+   * @param {Collider} collider2 
+   */
+  compareSpatialHashingPositions(collider1, collider2)
+  {
+    for(var x = -1; x != 1; x++) {
+      for(var y = -1; y != 1; y++) {
+        if (collider1.screenPos.x + x == collider2.screenPos.x &&
+            collider1.screenPos.y + y == collider2.screenPos.y) {
+              return true;
+        }
+      }
+    }
+    return false;
   }
 
   /**

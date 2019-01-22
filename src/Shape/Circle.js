@@ -36,9 +36,25 @@ class Circle extends Shape
             if (d == 0) {
                 return results[0];
             }
-
         }
-
         return results;
+    }
+
+    /**
+     * Adds x and y to their respective object values.
+     * @param {Scalar} x 
+     * @param {Scalar} y 
+     */
+    move(x, y) {
+        this.position.x += x;
+        this.position.y += y;
+    }
+
+    /**
+     * Scales the Polygon keeping the centre point the same.
+     * @param {Scalar} scale 
+     */
+    scale(scale) {
+        this.radius *= scale;
     }
 }

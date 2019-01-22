@@ -15,9 +15,41 @@ class Game
 
         //  Initialise game objects
         gameNs.game.collisionManager = new CollisionManager();
-        gameNs.game.collisionManager.addPolygonCollider(new PolygonCollider([new Vector2(10,10), new Vector2(100, 50), new Vector2(25, 40)]));
-        gameNs.game.collisionManager.addPolygonCollider(new PolygonCollider([new Vector2(600,500), new Vector2(510, 600), new Vector2(200, 400)]));
-        gameNs.game.collisionManager.addPolygonCollider(new PolygonCollider([new Vector2(500,500), new Vector2(310, 600), new Vector2(100, 400)]));
+        gameNs.game.player = new PolygonCollider([new Vector2(10,10), new Vector2(100, 50), new Vector2(25, 40)]);
+        gameNs.game.collisionManager.addPolygonCollider(gameNs.game.player);
+        gameNs.game.collisionManager.addPolygonCollider(new PolygonCollider([new Vector2(600,125), new Vector2(610, 110), new Vector2(630, 140), new Vector2(650, 170), new Vector2(660, 190), new Vector2(640, 220), new Vector2(620, 250), new Vector2(600, 180)]));
+
+        var instructions = "Controls for demo: \n   Movement: WASD \n   Rotation: left and right arrows \n   Scale: up and down arrows";
+        console.log(instructions);
+
+        document.addEventListener('keydown', function(event) {
+            event.preventDefault();   
+
+            //  Movement up and down
+            if(event.keyCode == 87) {   //  W key.
+                gameNs.game.player.shape.move(0, -5);  
+            } else if(event.keyCode == 83) {    //  S key.
+                gameNs.game.player.shape.move(0, 5);                  
+            }
+            //  Movement left and right.
+            if(event.keyCode == 65) {   //  A key.
+                gameNs.game.player.shape.move(-5, 0);  
+            } else if(event.keyCode == 68) {    //  D key.
+                gameNs.game.player.shape.move(5, 0);                  
+            }
+            //  Rotation
+            if(event.keyCode == 37) {   //  Left arrow.
+                gameNs.game.player.shape.rotate(-5);  
+            } else if(event.keyCode == 39) {    //  Right arrow.
+                gameNs.game.player.shape.rotate(5);                   
+            }
+            //  Scale
+            if (event.keyCode == 38) {  //  Up arrow.
+                gameNs.game.player.shape.scale(2);   
+            } else if (event.keyCode == 40) {   //  Down arrow. 
+                gameNs.game.player.shape.scale(0.5);   
+            }
+        });
     }
 
     update() {

@@ -43,7 +43,7 @@ class Game
     update() {
         //  Update game objects.
         var collisionResults = gameNs.game.collisionManager.checkPolygonColliderArray();
-        if (gameNs.game.collisionManager.collidedWithTag(gameNs.game.player, collisionResults, 'rock')) {
+        if (CollisionManager.CollidedWithTag(CollisionManager.IndexOfElement(gameNs.game.collisionManager.polygonColliderArray, gameNs.game.player), collisionResults, gameNs.game.collisionManager.polygonColliderArray, 'rock')) {
             console.log('collided with rock.');
         }
         //  Draw new frame.

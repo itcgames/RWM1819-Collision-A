@@ -15,9 +15,35 @@ class Game
 
         //  Initialise game objects
         gameNs.game.collisionManager = new CollisionManager();
-        gameNs.game.collisionManager.addBoxCollider(new BoxCollider(new Vector2(0,0), 50, 50));
-        gameNs.game.collisionManager.addBoxCollider(new BoxCollider(new Vector2(120,520), 50, 50));
-        gameNs.game.collisionManager.addBoxCollider(new BoxCollider(new Vector2(100,500), 50, 50));
+        gameNs.game.player = new BoxCollider(new Vector2(0,0), 50, 50);
+        gameNs.game.collisionManager.addBoxCollider(gameNs.game.player);
+        gameNs.game.collisionManager.addBoxCollider(new BoxCollider(new Vector2(100,100), 50, 50));
+
+        var instructions = "Controls for demo: \n   Movement: WASD\n    Scale: up and down arrows";
+        console.log(instructions);
+
+        document.addEventListener('keydown', function(event) {
+            event.preventDefault(); 
+            //  Movement up and down
+            if(event.keyCode == 87) {   //  W key.
+                gameNs.game.player.shape.move(0, -5);  
+            } else if(event.keyCode == 83) {    //  S key.
+                gameNs.game.player.shape.move(0, 5);                  
+            }
+            //  Movement left and right.
+            if(event.keyCode == 65) {   //  A key.
+                gameNs.game.player.shape.move(-5, 0);  
+            } else if(event.keyCode == 68) {    //  D key.
+                gameNs.game.player.shape.move(5, 0);                  
+            }
+
+            //  Scale
+            if (event.keyCode == 38) {  //  Up arrow.
+                gameNs.game.player.shape.scale(2);   
+            } else if (event.keyCode == 40) {   //  Down arrow. 
+                gameNs.game.player.shape.scale(0.5);   
+            }
+        });
     }
 
     update() {
