@@ -45,7 +45,7 @@ class Game
             }
             //  Scale
             if (event.keyCode == 38) {  //  Up arrow.
-                gameNs.game.player.shape.scale(2);   
+                gameNs.game.player.shape.scale(2);  
             } else if (event.keyCode == 40) {   //  Down arrow. 
                 gameNs.game.player.shape.scale(0.5);   
             }
