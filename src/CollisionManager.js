@@ -398,7 +398,8 @@ class CollisionManager
    */
   boxCollidedWithTag(collider, tag){
     var result = false;
-    result = CollisionManager.CollidedWithTag(CollisionManager.IndexOfElement(this.boxColliderArray, collider), this.boxColliderArrayResults, this.boxColliderArray, tag);
+    var colliderIndex = CollisionManager.IndexOfElement(this.boxColliderArray, collider);
+    result = CollisionManager.CollidedWithTag(colliderIndex, this.boxColliderArrayResults, this.boxColliderArray, tag);
     return result;
   }
 
@@ -409,7 +410,8 @@ class CollisionManager
    */
   circleCollidedWithTag(collider, tag){
     var result = false;
-    result = CollisionManager.CollidedWithTag(CollisionManager.IndexOfElement(this.circleColliderArray, collider), this.circleColliderArrayResults, this.circleColliderArray, tag);
+    var colliderIndex = CollisionManager.IndexOfElement(this.circleColliderArray, collider);
+    result = CollisionManager.CollidedWithTag(colliderIndex, this.circleColliderArrayResults, this.circleColliderArray, tag);
     return result;
   }
 
