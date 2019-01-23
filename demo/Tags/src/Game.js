@@ -27,23 +27,23 @@ class Game
             event.preventDefault(); 
             //  Movement up and down
             if(event.keyCode == 87) {   //  W key.
-                gameNs.game.player.shape.move(0, -5);  
+                gameNs.game.player.move(0, -5);  
             } else if(event.keyCode == 83) {    //  S key.
-                gameNs.game.player.shape.move(0, 5);                  
+                gameNs.game.player.move(0, 5);                  
             }
             //  Movement left and right.
             if(event.keyCode == 65) {   //  A key.
-                gameNs.game.player.shape.move(-5, 0);  
+                gameNs.game.player.move(-5, 0);  
             } else if(event.keyCode == 68) {    //  D key.
-                gameNs.game.player.shape.move(5, 0);                  
+                gameNs.game.player.move(5, 0);                  
             }
         });
     }
 
     update() {
         //  Update game objects.
-        var collisionResults = gameNs.game.collisionManager.checkPolygonColliderArray();
-        if (CollisionManager.CollidedWithTag(CollisionManager.IndexOfElement(gameNs.game.collisionManager.polygonColliderArray, gameNs.game.player), collisionResults, gameNs.game.collisionManager.polygonColliderArray, 'rock')) {
+        gameNs.game.collisionManager.checkAllColliders();
+        if (gameNs.game.collisionManager.polygonCollidedWithTag(gameNs.game.player, 'rock')) {
             console.log('collided with rock.');
         }
         //  Draw new frame.

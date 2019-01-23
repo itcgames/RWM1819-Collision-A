@@ -26,27 +26,27 @@ class Game
 
             //  Movement up and down
             if(event.keyCode == 87) {   //  W key.
-                gameNs.game.player.shape.move(0, -5);  
+                gameNs.game.player.move(0, -5);  
             } else if(event.keyCode == 83) {    //  S key.
-                gameNs.game.player.shape.move(0, 5);                  
+                gameNs.game.player.move(0, 5);                  
             }
             //  Movement left and right.
             if(event.keyCode == 65) {   //  A key.
-                gameNs.game.player.shape.move(-5, 0);  
+                gameNs.game.player.move(-5, 0);  
             } else if(event.keyCode == 68) {    //  D key.
-                gameNs.game.player.shape.move(5, 0);                  
+                gameNs.game.player.move(5, 0);                  
             }
             //  Rotation
             if(event.keyCode == 37) {   //  Left arrow.
-                gameNs.game.player.shape.rotate(-5);  
+                gameNs.game.player.rotate(-5);  
             } else if(event.keyCode == 39) {    //  Right arrow.
-                gameNs.game.player.shape.rotate(5);                   
+                gameNs.game.player.rotate(5);                   
             }
             //  Scale
             if (event.keyCode == 38) {  //  Up arrow.
-                gameNs.game.player.shape.scale(2);   
+                gameNs.game.player.scale(2);   
             } else if (event.keyCode == 40) {   //  Down arrow. 
-                gameNs.game.player.shape.scale(0.5);   
+                gameNs.game.player.scale(0.5);   
             }
         });
     }

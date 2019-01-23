@@ -25,29 +25,28 @@ class Game
             event.preventDefault();   
 
             //  Movement up and down
-            if(event.keyCode == 87) {   //  W key.
-                gameNs.game.circle.shape.position.y += -5;  
+            if(event.keyCode == 87) {           //  W key.
+                gameNs.game.circle.move(0, -5);  
             } else if(event.keyCode == 83) {    //  S key.
-                gameNs.game.circle.shape.position.y += 5;                  
+                gameNs.game.circle.move(0, 5);                  
             }
             //  Movement left and right.
-            if(event.keyCode == 65) {   //  A key.
-                gameNs.game.circle.shape.position.x += -5;  
+            if(event.keyCode == 65) {           //  A key.
+                gameNs.game.circle.move(-5, 0);  
             } else if(event.keyCode == 68) {    //  D key.
-                gameNs.game.circle.shape.position.x += 5;                  
-            }
+                gameNs.game.circle.move(5, 0);            }
 
             //  Movement up and down
-            if(event.keyCode == 38) {   //  Up arrow.
-                gameNs.game.box.shape.position.y += -5;  
+            if(event.keyCode == 38) {           //  Up arrow.
+                gameNs.game.box.move(0, -5);  
             } else if(event.keyCode == 40) {    //  Down arrow.
-                gameNs.game.box.shape.position.y += 5;                  
+                gameNs.game.box.move(0, 5);                  
             }
             //  Movement left and right.
-            if(event.keyCode == 37) {   //  Left arrow.
-                gameNs.game.box.shape.position.x += -5;  
+            if(event.keyCode == 37) {           //  Left arrow.
+                gameNs.game.box.move(-5, 0);  
             } else if(event.keyCode == 39) {    //  Right arrow.
-                gameNs.game.box.shape.position.x += 5;                  
+                gameNs.game.box.move(5, 0);                  
             }
         });
     }

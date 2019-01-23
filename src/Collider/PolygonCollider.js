@@ -26,4 +26,12 @@ class PolygonCollider extends Collider
             this.vertices[i] = this.vertices[i - 1].add(differenceVector[i - 1]);
         }
     }
+
+    /**
+     * 
+     * @param {Float} angle 
+     */
+    rotate(angle){
+        this.shape.rotate(angle);
+    }
 }

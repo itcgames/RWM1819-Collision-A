@@ -11,6 +11,11 @@ class CollisionManager
     this.circleColliderArray = [];
     this.polygonColliderArray = [];
 
+    this.boxColliderArrayResults = [];
+    this.circleColliderArrayResults = [];
+    this.polygonColliderArrayResults = [];
+    this.circleAndBoxColliderArrayResults = [];
+
     this.collisionColour = "Red";
     this.noCollisionColour = "Green";
   }
@@ -29,46 +34,41 @@ class CollisionManager
    * @return {Boolean[][]}
    */
   checkBoxColliderArray() {
-    var boxResult;
     if (this.boxColliderArray.length > 0) {
-      boxResult = this.checkArray(this.boxColliderArray, CollisionManager.AxisAlignedBoundingBox);
+      this.boxColliderArrayResults = this.checkArray(this.boxColliderArray, CollisionManager.AxisAlignedBoundingBox);
     }
-    return boxResult;
+    return this.boxColliderArrayResults;
   }
 
   /**
    * @return {Boolean[][]}
    */
   checkCircleColliderArray() {
-    var circleResult;
     if (this.circleColliderArray.length > 0) {
-      var circleResult = this.checkArray(this.circleColliderArray, CollisionManager.CircleCollision);
+      this.circleColliderArrayResults = this.checkArray(this.circleColliderArray, CollisionManager.CircleCollision);
     }
-    return circleResult
+    return this.circleColliderArrayResults;
   }
 
   /**
    * @return {Boolean[][][]} Returns a boolean dictionary. The results for checking the boxColliders against the circleColliders is stored behind the key = 'BoxResults' while
    * the results for checking the circleColliders against the boxColliders is stored behind the key = 'CircleResults'.
    */
-  checkCircleAndBoxColliderArray()
-  {
-    var collisionResult = [];
+  checkCircleAndBoxColliderArray() {
     if (this.circleColliderArray.length > 0 && this.boxColliderArray.length > 0){
-      collisionResult = this.checkArrays(this.boxColliderArray, this.circleColliderArray, 'BoxResults', 'CircleResults', CollisionManager.CircleRectangleCollision);
+      this.circleAndBoxColliderArrayResults = this.checkArrays(this.boxColliderArray, this.circleColliderArray, 'BoxResults', 'CircleResults', CollisionManager.CircleRectangleCollision);
     }
-    return collisionResult;
+    return this.circleAndBoxColliderArrayResults;
   }
 
   /**
    * @return {Boolean[][]}
    */
   checkPolygonColliderArray() {
-    var polygonResult;
     if (this.polygonColliderArray.length > 0) {
-      polygonResult = this.checkArray(this.polygonColliderArray, CollisionManager.SeperatingAxisTheorem);
+      this.polygonColliderArrayResults = this.checkArray(this.polygonColliderArray, CollisionManager.SeperatingAxisTheorem);
     }
-    return polygonResult;
+    return this.polygonColliderArrayResults;
   }
 
   /**
@@ -393,6 +393,58 @@ class CollisionManager
 
   /**
    * 
+   * @param {BoxCollider} collider 
+   * @param {String} tag 
+   */
+  boxCollidedWithTag(collider, tag){
+    var result = false;
+    result = CollisionManager.CollidedWithTag(CollisionManager.IndexOfElement(this.boxColliderArray, collider), this.boxColliderArrayResults, this.boxColliderArray, tag);
+    return result;
+  }
+
+  /**
+   * 
+   * @param {CircleCollider} collider 
+   * @param {String} tag 
+   */
+  circleCollidedWithTag(collider, tag){
+    var result = false;
+    result = CollisionManager.CollidedWithTag(CollisionManager.IndexOfElement(this.circleColliderArray, collider), this.circleColliderArrayResults, this.circleColliderArray, tag);
+    return result;
+  }
+
+  /**
+   * 
+   * @param {CircleCollider || BoxCollider} collider 
+   * @param {String} colliderType the type of the collider typed as a string.
+   * @param {String} tag 
+   */
+  circleAndBoxCollidedWithTag(collider, colliderType, tag){
+    var result = false;
+    if (colliderType === "CircleCollider"){
+      var colliderIndex = CollisionManager.IndexOfElement(this.circleColliderArray, collider);
+      result = CollisionManager.CollidedWithTag(colliderIndex, this.circleAndBoxColliderArrayResults['CircleResults'], this.boxColliderArray, tag);
+    } else if (colliderType === "BoxCollider"){
+      var colliderIndex = CollisionManager.IndexOfElement(this.boxColliderArray, collider);
+      result = CollisionManager.CollidedWithTag(colliderIndex, this.circleAndBoxColliderArrayResults['BoxResults'], this.circleColliderArray, tag);
+    }
+    return result;
+  }
+
+  /**
+   * 
+   * @param {PolygonCollider} collider 
+   * @param {String} tag 
+   */
+  polygonCollidedWithTag(collider, tag) {
+    var colliderIndex = CollisionManager.IndexOfElement(this.polygonColliderArray, collider);
+    var result = CollisionManager.CollidedWithTag(colliderIndex, this.polygonColliderArrayResults, this.polygonColliderArray, tag);
+    return result;
+  }
+  
+
+  /**
+   * 
    * @param {Collider} colliderIndex the index of the collider in the results array.
    * @param {Boolean[]} collisionResults 
    * @param {Collider[]} checkArray the array that you want to test the collider against.
@@ -400,7 +452,7 @@ class CollisionManager
    * @return {Boolean}
    */
   static CollidedWithTag(colliderIndex, collisionResults, checkArray, tag) {    
-    var results = [];
+    var result = false;
     if (colliderIndex > -1) {
       var collidedObjectTags = [];
       for(var i = 0; i < collisionResults[colliderIndex].length; i++) {
@@ -408,9 +460,9 @@ class CollisionManager
           collidedObjectTags.push.apply(collidedObjectTags, checkArray[i].objectTags);
         }
       }
-      results = CollisionManager.ArrayContainsElement(collidedObjectTags, tag);
+      result = CollisionManager.ArrayContainsElement(collidedObjectTags, tag);
     }
-    return results;
+    return result;
   }
 
   /**

@@ -65,4 +65,21 @@ class Collider
     set position(newPos){
         this.shape.position = newPos;
     }
+
+    /**
+     * 
+     * @param {Integer} x 
+     * @param {Integer} y 
+     */
+    move(x, y){
+        this.shape.move(x, y);
+    }
+
+    /**
+     * 
+     * @param {Float} scale 
+     */
+    scale(scale){
+        this.shape.scale(scale);
+    }
 }
