@@ -1,8 +1,7 @@
 /*! CollisionComponent v0.1.0 - MIT license */
 'use strict';
 
-class CollisionManager
-{
+class CollisionManager {
   /**
    * Default constructor for the class
    */
@@ -55,7 +54,7 @@ class CollisionManager
    * the results for checking the circleColliders against the boxColliders is stored behind the key = 'CircleResults'.
    */
   checkCircleAndBoxColliderArray() {
-    if (this.circleColliderArray.length > 0 && this.boxColliderArray.length > 0){
+    if (this.circleColliderArray.length > 0 && this.boxColliderArray.length > 0) {
       this.circleAndBoxColliderArrayResults = this.checkArrays(this.boxColliderArray, this.circleColliderArray, 'BoxResults', 'CircleResults', CollisionManager.CircleRectangleCollision);
     }
     return this.circleAndBoxColliderArrayResults;
@@ -90,7 +89,7 @@ class CollisionManager
           ctx.fillStyle = this.noCollisionColour;
         }
         ctx.fill();
-      });      
+      });
     }
     //  If the circleColliderArray isn't empty.
     if (this.circleColliderArray.length > 0) {
@@ -162,19 +161,19 @@ class CollisionManager
         }
         //  Check if the current element should be ignored.
         var ignoreObject = false;
-        for(var k = 0; k < inputArray[j].objectTags.length; k++) {
+        for (var k = 0; k < inputArray[j].objectTags.length; k++) {
           var index = inputArray[i].ignoreTags.indexOf(inputArray[j].objectTags[k]);
           if (index > -1) {
             ignoreObject = true;
             break;
           }
         }
-        
+
         var checkCollision = this.compareSpatialHashingPositions(inputArray[i], inputArray[j]);
 
-        if (checkCollision === true && ignoreObject === false && inputArray[i] !== inputArray[j] && result[i][j] === undefined){
+        if (checkCollision === true && ignoreObject === false && inputArray[i] !== inputArray[j] && result[i][j] === undefined) {
           var testResult = inputFunction(inputArray[i], inputArray[j]);
-          result[i][j] = testResult;        
+          result[i][j] = testResult;
         }
       }
     }
@@ -186,7 +185,7 @@ class CollisionManager
           colliding = true;
         }
       }
-      inputArray[i].colliding = colliding;      
+      inputArray[i].colliding = colliding;
     }
     return result;
   }
@@ -227,15 +226,14 @@ class CollisionManager
     var result = [];
 
     //  Test inputArray1 against inputArray2.
-    result[resultLabel1] = []; 
-    for(var i = 0; i < inputArray1.length; i++){
+    result[resultLabel1] = [];
+    for (var i = 0; i < inputArray1.length; i++) {
       result[resultLabel1][i] = [];
-      for(var j = 0; j < inputArray2.length; j++){
+      for (var j = 0; j < inputArray2.length; j++) {
         //  Check if the current element should be ignored.
         var ignoreObject = false;
         var whileIndex = 0;
-        while (ignoreObject === false && whileIndex < inputArray2[j].objectTags.length)
-        {
+        while (ignoreObject === false && whileIndex < inputArray2[j].objectTags.length) {
           var index = inputArray1[i].ignoreTags.indexOf(inputArray2[j].objectTags[whileIndex]);
           if (index > -1) {
             ignoreObject = true;
@@ -257,19 +255,18 @@ class CollisionManager
           colliding = true;
         }
       }
-      inputArray1[i].colliding = colliding;      
+      inputArray1[i].colliding = colliding;
     }
 
     //  Test inputArray2 against inputArray1.
     result[resultLabel2] = [];
-    for(var i = 0; i < inputArray2.length; i++){
+    for (var i = 0; i < inputArray2.length; i++) {
       result[resultLabel2][i] = [];
-      for(var j = 0; j < inputArray1.length; j++){
+      for (var j = 0; j < inputArray1.length; j++) {
         //  Check if the current element should be ignored.
         var ignoreObject = false;
         var whileIndex = 0;
-        while (ignoreObject === false && whileIndex < inputArray1[j].objectTags.length)
-        {
+        while (ignoreObject === false && whileIndex < inputArray1[j].objectTags.length) {
           var index = inputArray2[i].ignoreTags.indexOf(inputArray1[j].objectTags[whileIndex]);
           if (index > -1) {
             ignoreObject = true;
@@ -291,7 +288,7 @@ class CollisionManager
           colliding = true;
         }
       }
-      inputArray2[i].colliding = colliding;      
+      inputArray2[i].colliding = colliding;
     }
 
     return result;
@@ -378,13 +375,12 @@ class CollisionManager
    * @param {Collider} collider1 
    * @param {Collider} collider2 
    */
-  compareSpatialHashingPositions(collider1, collider2)
-  {
-    for(var x = -1; x != 1; x++) {
-      for(var y = -1; y != 1; y++) {
+  compareSpatialHashingPositions(collider1, collider2) {
+    for (var x = -1; x != 1; x++) {
+      for (var y = -1; y != 1; y++) {
         if (collider1.screenPos.x + x == collider2.screenPos.x &&
-            collider1.screenPos.y + y == collider2.screenPos.y) {
-              return true;
+          collider1.screenPos.y + y == collider2.screenPos.y) {
+          return true;
         }
       }
     }
@@ -396,7 +392,7 @@ class CollisionManager
    * @param {BoxCollider} collider 
    * @param {String} tag 
    */
-  boxCollidedWithTag(collider, tag){
+  boxCollidedWithTag(collider, tag) {
     var result = false;
     var colliderIndex = CollisionManager.IndexOfElement(this.boxColliderArray, collider);
     result = CollisionManager.CollidedWithTag(colliderIndex, this.boxColliderArrayResults, this.boxColliderArray, tag);
@@ -408,7 +404,7 @@ class CollisionManager
    * @param {CircleCollider} collider 
    * @param {String} tag 
    */
-  circleCollidedWithTag(collider, tag){
+  circleCollidedWithTag(collider, tag) {
     var result = false;
     var colliderIndex = CollisionManager.IndexOfElement(this.circleColliderArray, collider);
     result = CollisionManager.CollidedWithTag(colliderIndex, this.circleColliderArrayResults, this.circleColliderArray, tag);
@@ -421,12 +417,12 @@ class CollisionManager
    * @param {String} colliderType the type of the collider typed as a string.
    * @param {String} tag 
    */
-  circleAndBoxCollidedWithTag(collider, colliderType, tag){
+  circleAndBoxCollidedWithTag(collider, colliderType, tag) {
     var result = false;
-    if (colliderType === "CircleCollider"){
+    if (colliderType === "CircleCollider") {
       var colliderIndex = CollisionManager.IndexOfElement(this.circleColliderArray, collider);
       result = CollisionManager.CollidedWithTag(colliderIndex, this.circleAndBoxColliderArrayResults['CircleResults'], this.boxColliderArray, tag);
-    } else if (colliderType === "BoxCollider"){
+    } else if (colliderType === "BoxCollider") {
       var colliderIndex = CollisionManager.IndexOfElement(this.boxColliderArray, collider);
       result = CollisionManager.CollidedWithTag(colliderIndex, this.circleAndBoxColliderArrayResults['BoxResults'], this.circleColliderArray, tag);
     }
@@ -443,7 +439,7 @@ class CollisionManager
     var result = CollisionManager.CollidedWithTag(colliderIndex, this.polygonColliderArrayResults, this.polygonColliderArray, tag);
     return result;
   }
-  
+
 
   /**
    * 
@@ -453,11 +449,11 @@ class CollisionManager
    * @param {String} tag 
    * @return {Boolean}
    */
-  static CollidedWithTag(colliderIndex, collisionResults, checkArray, tag) {    
+  static CollidedWithTag(colliderIndex, collisionResults, checkArray, tag) {
     var result = false;
     if (colliderIndex > -1) {
       var collidedObjectTags = [];
-      for(var i = 0; i < collisionResults[colliderIndex].length; i++) {
+      for (var i = 0; i < collisionResults[colliderIndex].length; i++) {
         if (collisionResults[colliderIndex][i] === true) {
           collidedObjectTags.push.apply(collidedObjectTags, checkArray[i].objectTags);
         }
@@ -473,8 +469,7 @@ class CollisionManager
    * @param {Element} element 
    * @return {Scalar}
    */
-  static IndexOfElement(array, element)
-  {
+  static IndexOfElement(array, element) {
     return array.indexOf(element);
   }
 
@@ -498,8 +493,7 @@ class CollisionManager
    * @param {BoxCollider} boxCollider 
    * @param {CircleCollider} circleCollider 
    */
-  static CircleRectangleCollision(boxCollider, circleCollider)
-  {
+  static CircleRectangleCollision(boxCollider, circleCollider) {
     var result = false;
     var distX = Math.abs(circleCollider.shape.position.x - (boxCollider.shape.position.x + (boxCollider.shape.width / 2)));
     var distY = Math.abs(circleCollider.shape.position.y - (boxCollider.shape.position.y + (boxCollider.shape.height / 2)));
@@ -523,7 +517,7 @@ class CollisionManager
     if (collider1.shape.position.x <= collider2.shape.position.x + collider2.shape.width &&
       collider1.shape.position.x + collider1.shape.width >= collider2.shape.position.x &&
       collider1.shape.position.y <= collider2.shape.position.y + collider2.shape.height &&
-      collider1.shape.position.y + collider1.shape.height >= collider2.shape.position.y ) {
+      collider1.shape.position.y + collider1.shape.height >= collider2.shape.position.y) {
       return true;
     } else {
       return false;
