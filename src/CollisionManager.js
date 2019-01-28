@@ -17,6 +17,14 @@ class CollisionManager {
 
     this.collisionColour = "Red";
     this.noCollisionColour = "Green";
+    this.checkedColour = "Yellow";
+
+    this.usingSpatialHashing = false;
+    this.gridHeight = 0;
+    this.gridWidth = 0;
+
+    //  Be wary of making this value true as there is a major performance hit.
+    this.renderGrid = false;
   }
 
   /**
@@ -75,6 +83,21 @@ class CollisionManager {
    * @param {Context} ctx 
    */
   render(ctx) {
+    if (this.renderGrid === true && this.usingSpatialHashing === true && this.gridHeight > 0 && this.gridWidth > 0) {
+      var width = ctx.canvas.width;
+      var height = ctx.canvas.height;
+      for (var x = 0; x < width; x += this.gridWidth) {
+        for (var y = 0; y < height; y += this.gridHeight) {
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, height);
+          ctx.stroke();
+          ctx.moveTo(0, y);
+          ctx.lineTo(width, y);
+          ctx.stroke();
+        }
+      }
+    }
+
     //  If the boxColliderArray isn't empty.
     if (this.boxColliderArray.length > 0) {
       //  Cycle through each collider.
@@ -82,11 +105,15 @@ class CollisionManager {
         ctx.beginPath();
         //  Draw the rectangle.
         ctx.rect(collider.shape.position.x, collider.shape.position.y, collider.shape.width, collider.shape.height);
-        //  If the collider is colliding make it [[RED]] otherwise it is [[GREEN]]
+        //  If the collider is colliding make it [[RED]] otherwise check if it was checked for a collision and if it it was make it [[Yellow]], else it is [[GREEN]].
         if (collider.colliding === true) {
           ctx.fillStyle = this.collisionColour;
         } else {
-          ctx.fillStyle = this.noCollisionColour;
+          if (collider.checkedForCollision === true) {
+            ctx.fillStyle = this.checkedColour;
+          } else {
+            ctx.fillStyle = this.noCollisionColour;
+          }
         }
         ctx.fill();
       });
@@ -98,11 +125,15 @@ class CollisionManager {
         ctx.beginPath();
         //  Draw the circle.
         ctx.arc(collider.shape.position.x, collider.shape.position.y, collider.shape.radius, 0, 360);
-        //  If the collider is colliding make it [[RED]] otherwise it is [[GREEN]]
+        //  If the collider is colliding make it [[RED]] otherwise check if it was checked for a collision and if it it was make it [[Yellow]], else it is [[GREEN]].
         if (collider.colliding === true) {
           ctx.fillStyle = this.collisionColour;
         } else {
-          ctx.fillStyle = this.noCollisionColour;
+          if (collider.checkedForCollision === true) {
+            ctx.fillStyle = this.checkedColour;
+          } else {
+            ctx.fillStyle = this.noCollisionColour;
+          }
         }
         ctx.fill();
       });
@@ -121,11 +152,15 @@ class CollisionManager {
             ctx.lineTo(vertexArray[i].x, vertexArray[i].y);
           }
         }
-        //  If the collider is colliding make it [[RED]] otherwise it is [[GREEN]].
+        //  If the collider is colliding make it [[RED]] otherwise check if it was checked for a collision and if it it was make it [[Yellow]], else it is [[GREEN]].
         if (collider.colliding === true) {
           ctx.fillStyle = this.collisionColour;
         } else {
-          ctx.fillStyle = this.noCollisionColour;
+          if (collider.checkedForCollision === true) {
+            ctx.fillStyle = this.checkedColour;
+          } else {
+            ctx.fillStyle = this.noCollisionColour;
+          }
         }
         ctx.fill()
       });
@@ -151,6 +186,8 @@ class CollisionManager {
      * The result of the tests are put into the appropriate positions to prevent retesting the same elements against eachother.
      */
     var result = [];
+    //  Reset the necessary values or each collider.
+    this.resetColliderArray(inputArray);
     // Cycle through each element in the array.
     for (var i = 0; i < inputArray.length; i++) {
       result[i] = [];
@@ -169,11 +206,19 @@ class CollisionManager {
           }
         }
 
-        var checkCollision = this.compareSpatialHashingPositions(inputArray[i], inputArray[j]);
+        if (ignoreObject === false && inputArray[i] !== inputArray[j] && result[i][j] === undefined) {
+          //  Checks if we should bother checking the collision.
+          var checkCollision = true;
+          if (this.usingSpatialHashing === true) {
+            checkCollision = this.compareSpatialHashingPositions(inputArray[i], inputArray[j]);
+          }
 
-        if (checkCollision === true && ignoreObject === false && inputArray[i] !== inputArray[j] && result[i][j] === undefined) {
-          var testResult = inputFunction(inputArray[i], inputArray[j]);
-          result[i][j] = testResult;
+          if (checkCollision === true) {
+            var testResult = inputFunction(inputArray[i], inputArray[j]);
+            inputArray[i].checkedForCollision = true;
+            inputArray[j].checkedForCollision = true;
+            result[i][j] = testResult;
+          }
         }
       }
     }
@@ -224,7 +269,9 @@ class CollisionManager {
      *  ignore tag that array2.element1 is looking for.
      */
     var result = [];
-
+    //  Reset the necessary values or each collider.
+    this.resetColliderArray(inputArray1);
+    this.resetColliderArray(inputArray2);
     //  Test inputArray1 against inputArray2.
     result[resultLabel1] = [];
     for (var i = 0; i < inputArray1.length; i++) {
@@ -242,8 +289,18 @@ class CollisionManager {
         }
 
         if (ignoreObject === false) {
-          var testResult = inputFunction(inputArray1[i], inputArray2[j]);
-          result[resultLabel1][i][j] = testResult;
+          //  Checks if we should bother checking the collision.
+          var checkCollision = true;
+          if (this.usingSpatialHashing === true) {
+            checkCollision = this.compareSpatialHashingPositions(inputArray1[i], inputArray2[j]);
+          }
+
+          if (checkCollision === true) {
+            var testResult = inputFunction(inputArray1[i], inputArray2[j]);
+            inputArray1[i].checkedForCollision = true;
+            inputArray2[j].checkedForCollision = true;
+            result[resultLabel1][i][j] = testResult;
+          }
         }
       }
     }
@@ -275,8 +332,18 @@ class CollisionManager {
         }
 
         if (ignoreObject === false) {
-          var testResult = inputFunction(inputArray1[j], inputArray2[i]);
-          result[resultLabel2][i][j] = testResult;
+          //  Checks if we should bother checking the collision.
+          var checkCollision = true;
+          if (this.usingSpatialHashing === true) {
+            checkCollision = this.compareSpatialHashingPositions(inputArray2[i], inputArray1[j]);
+          }
+
+          if (checkCollision === true) {
+            var testResult = inputFunction(inputArray1[j], inputArray2[i]);
+            inputArray2[i].checkedForCollision = true;
+            inputArray1[j].checkedForCollision = true;
+            result[resultLabel2][i][j] = testResult;
+          }
         }
       }
     }
@@ -292,6 +359,16 @@ class CollisionManager {
     }
 
     return result;
+  }
+
+  /**
+   * Resets all the necessary values in each collider in the array.
+   * @param {Collider[]} inputArray 
+   */
+  resetColliderArray(inputArray) {
+    for (var i = 0; i < inputArray.length; i++) {
+      inputArray[i].checkedForCollision = false;
+    }
   }
 
   /**
@@ -357,6 +434,13 @@ class CollisionManager {
    * @param {Scalar} gridHeight 
    */
   updateSpatialHashing(gridWidth, gridHeight) {
+    if (this.usingSpatialHashing === false) {
+      this.usingSpatialHashing = true;
+    }
+
+    this.gridWidth = gridWidth;
+    this.gridHeight = gridHeight;
+
     this.boxColliderArray.forEach(boxElement => {
       boxElement.updateSpatialHash(gridWidth, gridHeight);
     });
@@ -376,8 +460,8 @@ class CollisionManager {
    * @param {Collider} collider2 
    */
   compareSpatialHashingPositions(collider1, collider2) {
-    for (var x = -1; x != 1; x++) {
-      for (var y = -1; y != 1; y++) {
+    for (var x = -1; x < 2; x++) {
+      for (var y = -1; y < 2; y++) {
         if (collider1.screenPos.x + x == collider2.screenPos.x &&
           collider1.screenPos.y + y == collider2.screenPos.y) {
           return true;

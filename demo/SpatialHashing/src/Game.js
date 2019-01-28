@@ -14,10 +14,18 @@ class Game {
 
     //  Initialise game objects
     gameNs.game.collisionManager = new CollisionManager();
-    gameNs.game.player = new PolygonCollider([new Vector2(600, 25), new Vector2(610, 10), new Vector2(630, 40), new Vector2(650, 70), new Vector2(660, 90), new Vector2(640, 120), new Vector2(620, 150), new Vector2(600, 80)]);
-    gameNs.game.collisionManager.addPolygonCollider(gameNs.game.player); //  Player is at position 0 in our array.
+    //  Be wary of making this variable true as there is a major performance hit, and thus should only be used for debugging purposes.
+    gameNs.game.collisionManager.renderGrid = false;
+    //  The player is a bigger circle then the others.
+    gameNs.game.player = new CircleCollider(new Vector2(100, 100), 20, ["player"]);
+    gameNs.game.collisionManager.addCircleCollider(gameNs.game.player); //  Player is at position 0 in our array.
 
-    var instructions = "Controls for demo: \n   Movement: WASD \n   Rotation: left and right arrows \n   Scale: up and down arrows";
+    for (var i = 0; i < 1000; i++) {
+      //  Create a npc collider that is told to ignore the collisions of other npcs.
+      gameNs.game.collisionManager.addCircleCollider(new CircleCollider(new Vector2(Math.random() * window.innerWidth, Math.random() * window.innerHeight), 10, ["npc"], ["npc"]));
+    }
+
+    var instructions = "Controls for demo: \n   Movement: WASD\n You are the bigger circle.";
     console.log(instructions);
 
     document.addEventListener('keydown', function (event) {
@@ -35,24 +43,16 @@ class Game {
       } else if (event.keyCode == 68) { //  D key.
         gameNs.game.player.move(5, 0);
       }
-      //  Rotation
-      if (event.keyCode == 37) { //  Left arrow.
-        gameNs.game.player.rotate(-5);
-      } else if (event.keyCode == 39) { //  Right arrow.
-        gameNs.game.player.rotate(5);
-      }
-      //  Scale
-      if (event.keyCode == 38) { //  Up arrow.
-        gameNs.game.player.scale(2);
-      } else if (event.keyCode == 40) { //  Down arrow. 
-        gameNs.game.player.scale(0.5);
-      }
     });
   }
 
   update() {
+    //  We create an imaginary grid by which we can seperate objects.
+    //  In this example the width and height of each "tile" of the grid is 25.
+    //  Comment out this line to see what objects are checked against the player without spatial hashing.
+    gameNs.game.collisionManager.updateSpatialHashing(50, 50);
     //  Update game objects.
-    gameNs.game.collisionResults = gameNs.game.collisionManager.checkPolygonColliderArray();
+    gameNs.game.collisionManager.checkCircleColliderArray();
     //  Draw new frame.
     gameNs.game.render();
     // Recursive call to Update method.

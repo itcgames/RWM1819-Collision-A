@@ -52,7 +52,7 @@ class Game {
 
   update() {
     //  Update game objects.
-    gameNs.game.collisionResults = gameNs.game.collisionManager.checkPolygonColliderArray();
+    gameNs.game.collisionManager.checkPolygonColliderArray();
     //  Draw new frame.
     gameNs.game.render();
     // Recursive call to Update method.

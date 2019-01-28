@@ -7,6 +7,7 @@ class Collider {
    */
   constructor(shape, objectTags, ignoreTags) {
     this.colliding = false;
+    this.checkedForCollision = false;
     this.shape = shape;
     this.objectTags = objectTags;
     this.ignoreTags = ignoreTags;
